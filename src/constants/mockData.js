@@ -31,7 +31,8 @@ export const ASSET_LOGOS = {
   IRSA: "https://assets.cocos.capital/cocos/logos/IRSA.jpg",
 };
 
-export const ACTIVOS = [
+export const ACTIVOS = ({
+  activos: [
   {
     id: "GGAL",
     instrumento: "accion",
@@ -1278,4 +1279,5 @@ export const ACTIVOS = [
     noticias:
       "Demanda de cobertura cambiaria creció ante expectativas de unificación del tipo de cambio.",
   },
-];
+  ],
+}).activos;
