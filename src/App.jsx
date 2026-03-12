@@ -261,9 +261,38 @@ function SmallCard({ label, value, sub, labelHref }) {
             href={labelHref}
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#2F67B1", textDecoration: "underline" }}
+            title="Ver explicación en video"
+            style={{
+              color: "#2F67B1",
+              textDecoration: "underline",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+            }}
           >
-            {label}
+            <span>{label}</span>
+            <span
+              style={{
+                width: 14,
+                height: 14,
+                minWidth: 14,
+                minHeight: 14,
+                flexShrink: 0,
+                aspectRatio: "1 / 1",
+                borderRadius: "50%",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 9,
+                fontWeight: 900,
+                color: "#fff",
+                background: "#2F67B1",
+                textDecoration: "none",
+                lineHeight: "14px",
+              }}
+            >
+              ?
+            </span>
           </a>
         ) : (
           label
@@ -702,10 +731,16 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                 >
                   Indicadores clave
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gap: 8,
+                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                  }}
+                >
                   <SmallCard
                     label="Precio / Ganancias"
-                    labelHref="https://www.youtube.com/shorts/hTH2AUHJ7Hc"
+                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
                     value={fundamentals.pe ? `${fundamentals.pe}x` : null}
                     sub={
                       fundamentals.pe
@@ -715,7 +750,7 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                   />
                   <SmallCard
                     label="Precio / Valor libro"
-                    labelHref="https://www.youtube.com/shorts/hTH2AUHJ7Hc"
+                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
                     value={`${fundamentals.pb}x`}
                     sub={
                       fundamentals.pb <= 1
@@ -725,7 +760,7 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                   />
                   <SmallCard
                     label="Rentabilidad sobre patrimonio"
-                    labelHref="https://www.youtube.com/shorts/hTH2AUHJ7Hc"
+                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
                     value={
                       fundamentals.roe_pct !== null
                         ? `${fundamentals.roe_pct}%`
