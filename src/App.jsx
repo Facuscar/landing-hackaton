@@ -753,8 +753,15 @@ function Tarjeta({ activo, onRemove, isMobile }) {
               {fundamentals.dividend_yield_pct > 0 && (
                 <>
                   <Row label="Dividendo">
-                    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                      <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 16,
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div style={{ textAlign: "center" }}>
                         <div style={{ fontSize: 11, color: "#6B8EC8" }}>
                           Rendimiento anual
                         </div>
@@ -769,7 +776,7 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                         </div>
                       </div>
                       {fundamentals.dividendo_proximo_pago && (
-                        <div>
+                        <div style={{ textAlign: "center" }}>
                           <div style={{ fontSize: 11, color: "#6B8EC8" }}>
                             Próximo pago
                           </div>
