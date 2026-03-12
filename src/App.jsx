@@ -234,7 +234,101 @@ function Termometro({ min, max, actual, moneda }) {
   );
 }
 
-function SmallCard({ label, value, sub, labelHref }) {
+function getYouTubeEmbedUrl(url) {
+  if (!url) return null;
+  if (url.includes("/embed/")) return url;
+
+  try {
+    const parsed = new URL(url);
+    const fromQuery = parsed.searchParams.get("v");
+    const fromPath = parsed.pathname.split("/").filter(Boolean).pop();
+    const videoId = fromQuery || fromPath;
+    if (!videoId) return null;
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  } catch {
+    return null;
+  }
+}
+
+function VideoModal({ videoUrl, onClose }) {
+  const embedUrl = getYouTubeEmbedUrl(videoUrl);
+  if (!embedUrl) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0, 21, 51, 0.72)",
+        zIndex: 2000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "min(920px, 100%)",
+          background: "#fff",
+          borderRadius: 14,
+          border: `1px solid ${C.light}`,
+          overflow: "hidden",
+          boxShadow: "0 18px 60px rgba(0,0,0,0.28)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 12px",
+            borderBottom: `1px solid ${C.light}`,
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 800, color: C.dark }}>
+            Explicación en video
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              color: "#6B8EC8",
+              fontSize: 18,
+              lineHeight: 1,
+              padding: 2,
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div style={{ position: "relative", width: "100%", paddingTop: "56.25%" }}>
+          <iframe
+            src={embedUrl}
+            title="Explicación en video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: "none",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SmallCard({ label, value, sub, labelVideoUrl, onOpenVideo }) {
   return (
     <div
       style={{
@@ -256,11 +350,10 @@ function SmallCard({ label, value, sub, labelHref }) {
           marginBottom: 4,
         }}
       >
-        {labelHref ? (
-          <a
-            href={labelHref}
-            target="_blank"
-            rel="noreferrer"
+        {labelVideoUrl ? (
+          <button
+            type="button"
+            onClick={() => onOpenVideo?.(labelVideoUrl)}
             title="Ver explicación en video"
             style={{
               color: "#2F67B1",
@@ -268,6 +361,11 @@ function SmallCard({ label, value, sub, labelHref }) {
               display: "inline-flex",
               alignItems: "center",
               gap: 4,
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              padding: 0,
+              font: "inherit",
             }}
           >
             <span>{label}</span>
@@ -293,7 +391,7 @@ function SmallCard({ label, value, sub, labelHref }) {
             >
               ?
             </span>
-          </a>
+          </button>
         ) : (
           label
         )}
@@ -387,6 +485,7 @@ function Tarjeta({ activo, onRemove, isMobile }) {
   const ticker = general.ticker;
   const sube = precio.variacion_diaria_pct >= 0;
   const subeYTD = precio.variacion_ytd_pct >= 0;
+  const [videoModalUrl, setVideoModalUrl] = useState(null);
 
   const priceDisplay =
     precio.moneda === "ARS"
@@ -740,7 +839,8 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                 >
                   <SmallCard
                     label="Precio / Ganancias"
-                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    labelVideoUrl="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    onOpenVideo={setVideoModalUrl}
                     value={fundamentals.pe ? `${fundamentals.pe}x` : null}
                     sub={
                       fundamentals.pe
@@ -750,7 +850,8 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                   />
                   <SmallCard
                     label="Precio / Valor libro"
-                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    labelVideoUrl="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    onOpenVideo={setVideoModalUrl}
                     value={`${fundamentals.pb}x`}
                     sub={
                       fundamentals.pb <= 1
@@ -760,7 +861,8 @@ function Tarjeta({ activo, onRemove, isMobile }) {
                   />
                   <SmallCard
                     label="Rentabilidad sobre patrimonio"
-                    labelHref="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    labelVideoUrl="https://www.youtube.com/shorts/2p9l9ZC_Hp4"
+                    onOpenVideo={setVideoModalUrl}
                     value={
                       fundamentals.roe_pct !== null
                         ? `${fundamentals.roe_pct}%`
@@ -1070,6 +1172,12 @@ function Tarjeta({ activo, onRemove, isMobile }) {
           Datos ilustrativos · No constituye asesoramiento financiero
         </div>
       </div>
+      {videoModalUrl && (
+        <VideoModal
+          videoUrl={videoModalUrl}
+          onClose={() => setVideoModalUrl(null)}
+        />
+      )}
     </div>
   );
 }
